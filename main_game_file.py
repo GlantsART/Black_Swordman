@@ -91,11 +91,11 @@ def terminate():
     font = pygame.font.Font('C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 50)
     while True:
         ticks += 1
+        if ticks == 200:
+            break
         screen.blit(load_image('backgrounds/bg6.jpg'), (0, 0))
         txt = font.render(text[ticks // 50], True, (0, 0, 0))
         screen.blit(txt, (20, 20))
-        if ticks == 200:
-            break
         clock.tick(FPS)
         pygame.display.flip()
     pygame.quit()
