@@ -45,6 +45,7 @@ class Player(pygame.sprite.Sprite):
         self.attack = 0
         self.run = 0
         self.dead = 0
+        self.hurt = 0
         self.image = load_image('samurai/randered/baze.png')
         self.hp = 100
         self.ticks = 0
@@ -84,6 +85,15 @@ class Player(pygame.sprite.Sprite):
                                                        False)
                 elif self.dead > 10:
                     self.kill()
+        elif hurt_flag:
+            if self.ticks % 8 == 0:
+                self.hurt += 1
+                self.image = pygame.transform.flip(load_image(f'samurai/randered/Hurt{self.hurt}.png'), self.dir, False)
+                if self.hurt == 3:
+                    hurt_flag = False
+                    idle_flag = True
+                    self.hurt = 0
+                    self.image = pygame.transform.flip(load_image('samurai/randered/baze.png'), self.dir, False)
         elif attack_flag:
             if self.ticks % 6 == 0:
                 if self.attack == 7:
@@ -96,12 +106,13 @@ class Player(pygame.sprite.Sprite):
                 self.attack += 1
         elif protection_flag:
             self.image = pygame.transform.flip(load_image('samurai/randered/Protection.png'), self.dir, False)
-        if run_flag:
+        elif run_flag:
             if self.ticks % 6 == 0:
                 self.run = (self.run) % 8 + 1
                 self.image = pygame.transform.flip(load_image(f'samurai/randered/Run{self.run}.png'), self.dir, False)
                 self.rect = pygame.Rect(self.rect.x, self.rect.y, 55, 104)
         else:
+            self.image = pygame.transform.flip(load_image('samurai/randered/baze.png'), self.dir, False)
             self.run = 0
 
         return attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag
@@ -124,6 +135,7 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y + self.rect.h // 2 - y) < 100 and flag:
             if not self.protection_flag:
                 self.hp -= 50
+                return 'yes'
             return True
         return False
 

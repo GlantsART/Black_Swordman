@@ -213,6 +213,7 @@ def game():
     hurt_flag = False  # когда hp становится меньше                                              2
     dead_flag = False  # когда hp < 0                                                            1 +-
     protection_flag = False  # Когда зажата пкм                                                  4 +
+    flag = False
 
     ticks = 0
     enemis_kick = False
@@ -285,6 +286,11 @@ def game():
                 enemis.kick(x, y, flag)
 
         dead_flag = player.aliveCheck()
+
+        if not dead_flag and flag == 'yes':
+            flag = False
+            hurt_flag = True
+            attack_ticks, run_flag, idle_flag, protection_flag = False, False, False, False
 
         attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag = player.animation_script(
             attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag)
