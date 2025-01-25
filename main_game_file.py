@@ -88,7 +88,7 @@ def terminate():
     pygame.display.set_mode((600, 800))
     ticks = 0
     text = ['please wait', 'please wait.', 'please wait..', 'please wait...']
-    font = pygame.font.Font('C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 50)
+    font = pygame.font.Font('data/fonts/go3v2.ttf', 50)
     while True:
         ticks += 1
         if ticks == 200:
@@ -106,7 +106,7 @@ def options():
     pygame.display.set_caption('options')
     game_mouse_pos = (0, 0)
     back_menu_button = exit_menu_button = Button('backgrounds/button2.png', (30, 30), 'x',
-                                                 'C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 40, 45,
+                                                 'data/fonts/go3v2.ttf', 40, 45,
                                                  (0, 0, 0), (255, 176, 176))
 
     while True:
@@ -142,7 +142,7 @@ def load_screen():
 
         screen.blit(load_image('backgrounds/bg3.jpg'), (-200, 0))
 
-        font = pygame.font.Font('C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 100)
+        font = pygame.font.Font('data/fonts/go3v2.ttf', 100)
         text = font.render('Black Swordman', True, (61, 7, 7))
         text2 = font.render('Black Swordman', True, (255, 221, 148))
         screen.blit(text2, (318, 48))
@@ -151,12 +151,12 @@ def load_screen():
         if ticks % 10 == 0 and ticks <= 300:
             load_x += 19
         pygame.draw.rect(screen, (61, 7, 7), (325, 165, load_x, 45))
-        font = pygame.font.Font('C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 40)
+        font = pygame.font.Font('data/fonts/go3v2.ttf', 40)
         text3 = font.render('loading...', True, (216, 111, 28))
         screen.blit(text3, (335, 166))
 
         if ticks > 300:
-            font = pygame.font.Font('C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/kashimarusbycop.otf', 30)
+            font = pygame.font.Font('data/fonts/kashimarusbycop.otf', 30)
             text4 = font.render('Нажмите любую кнопку чтобы продолжить.', True, (61, 7, 7))
             screen.blit(text4, (340, 220))
 
@@ -167,10 +167,10 @@ def levels_menu():
     pygame.display.set_caption('chouse level')
     lvl_mouse_pos = (0, 0)
     exit_menu_button_lvl = Button('backgrounds/button2.png', (30, 30), 'x',
-                                  'C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 40, 45,
+                                  'data/fonts/go3v2.ttf', 40, 45,
                                   (0, 0, 0), (255, 176, 176))
     level_one_button = Button('backgrounds/level1.png', (200, 400), '',
-                              'C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 40, 45,
+                              'data/fonts/go3v2.ttf', 40, 45,
                               (0, 0, 0), (255, 176, 176), 'backgrounds/level1-1.png')
 
     while True:
@@ -203,7 +203,7 @@ def game():
     clock = pygame.time.Clock()
     player = generate_level(load_level('level1.txt'))
     exit_menu_button = Button('backgrounds/button2.png', (30, 30), 'x',
-                              'C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 40, 45,
+                              'data/fonts/go3v2.ttf', 40, 45,
                               (0, 0, 0), (255, 176, 176))
 
     attack_flag = False  # когда mousebuttondown                                                 3 +
@@ -313,13 +313,13 @@ def main_menu():
     pygame.display.set_caption('menu')
     menu_mouse_pos = (0, 0)
     play_button = Button('backgrounds/button1.png', (600, 200), 'play',
-                         'C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 70, 80,
+                         'data/fonts/go3v2.ttf', 70, 80,
                          (0, 0, 0), (255, 176, 176))
     option_button = Button('backgrounds/button1.png', (600, 350), 'options',
-                           'C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 70, 80, (0, 0, 0),
+                           'data/fonts/go3v2.ttf', 70, 80, (0, 0, 0),
                            (255, 176, 176))
     exit_button = Button('backgrounds/button1.png', (600, 500), 'exit',
-                         'C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', 70, 80, (0, 0, 0),
+                         'data/fonts/go3v2.ttf', 70, 80, (0, 0, 0),
                          (255, 176, 176))
     word = ['B', 55, 'l', 50, 'a', 60, 'c', 60, 'k', 60, ' ', 60, 'S', 55, 'w', 70, 'o', 60, 'r', 60, 'd', 60, 'm', 65,
             'a', 60, 'n', 60]

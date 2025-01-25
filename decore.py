@@ -14,7 +14,7 @@ class Text():
         self.pos_x = s
         self.pos = (s, 30)
         s += self.long
-        self.font = pygame.font.Font('C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', self.size)
+        self.font = pygame.font.Font('data/fonts/go3v2.ttf', self.size)
         self.text1 = self.font.render(self.text, True, self.color1)
         word_group.append(self)
 
@@ -25,11 +25,11 @@ class Text():
         global s
         if pos[0] in range(self.pos[0], self.pos[0] + self.long) and pos[1] in range(45, 45 + 65):
             self.pos = (self.pos_x, 15)
-            self.font = pygame.font.Font('C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', self.size + 10)
+            self.font = pygame.font.Font('data/fonts/go3v2.ttf', self.size + 10)
             self.text1 = self.font.render(self.text, True, self.color2)
         else:
             self.pos = (self.pos_x, 30)
-            self.font = pygame.font.Font('C:/Users/MSI/AppData/Local/Microsoft/Windows/Fonts/go3v2.ttf', self.size)
+            self.font = pygame.font.Font('data/fonts/go3v2.ttf', self.size)
             self.text1 = self.font.render(self.text, True, self.color1)
 
 
