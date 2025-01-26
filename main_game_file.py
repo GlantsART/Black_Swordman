@@ -1,7 +1,8 @@
 import pygame, os, sys
-from characters import Player, Tile, player_group, tile_group, all_sprites, FallenAngel, antogonisti_sprites
-from button import Button, load_image
-from decore import Text, word_group, draw_lives
+from scripts.characters import Player, Tile, player_group, tile_group, all_sprites, FallenAngel, antogonisti_sprites, \
+    Health, health_group, EndTile
+from scripts.button import Button, load_image
+from scripts.decore import Text, word_group, draw_lives
 
 pygame.init()
 
@@ -51,7 +52,7 @@ def load_image(name, colorkey=None):
 
 
 def generate_level(level):
-    player = None
+    player, portal = None, None
     for y in range(len(level)):
         for x in range(len(level[y])):
             if level[y][x] == '+':
@@ -60,6 +61,12 @@ def generate_level(level):
                 Tile('flour', x, y)
             elif level[y][x] == '=':
                 Tile('flour1', x, y)
+            elif level[y][x] == '|':
+                Tile('flour5', x, y)
+            elif level[y][x] == '%':
+                Tile('flour4', x, y)
+            elif level[y][x] == '^':
+                Tile('flour3', x, y)
             elif level[y][x] == '/':
                 Tile('flour2', x, y)
             elif level[y][x] == '#':
@@ -67,20 +74,54 @@ def generate_level(level):
             elif level[y][x] == '@':
                 if level[y][x-1] == '-':
                     Tile('flour', x, y)
-                    FallenAngel(x, y, 'flour')
+                    FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour')
+                elif level[y][x - 1] == '=':
+                    Tile('flour1', x, y)
+                    FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour1')
+                elif level[y][x - 1] == '/':
+                    Tile('flour2', x, y)
+                    FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour2')
+                elif level[y][x - 1] == '^':
+                    Tile('flour3', x, y)
+                    FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour3')
+                elif level[y][x - 1] == '%':
+                    Tile('flour4', x, y)
+                    FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour4')
+                elif level[y][x - 1] == '|':
+                    Tile('flour5', x, y)
+                    FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour5')
+
+
+            elif level[y][x] == '&':
+                if level[y][x-1] == '-':
+                    Tile('flour', x, y)
+                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour')
                 elif level[y][x-1] == '=':
                     Tile('flour1', x, y)
-                    FallenAngel(x, y, 'flour1')
+                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour1')
                 elif level[y][x-1] == '/':
                     Tile('flour2', x, y)
-                    FallenAngel(x, y, 'flour2')
+                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour2')
+                elif level[y][x-1] == '^':
+                    Tile('flour3', x, y)
+                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour3')
+                elif level[y][x-1] == '%':
+                    Tile('flour4', x, y)
+                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour5')
+                elif level[y][x-1] == '|':
+                    Tile('flour5', x, y)
+                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour5')
 
             elif level[y][x] == '.':
                 Tile('empty', x, y)
             elif level[y][x] == '$':
                 player = Player(x, y)
                 Tile('flour', x, y)
-    return player
+            elif level[y][x] == '!':
+                Health('backgrounds/hill1.png', 'backgrounds/flour1.png', x, y)
+            elif level[y][x] == '}':
+                portal = EndTile(x, y)
+    return player, portal
 
 
 def terminate():
@@ -200,14 +241,12 @@ def levels_menu():
 def game():
     pygame.display.set_caption('game')
     game_mouse_pos = (0, 0)
-    clock = pygame.time.Clock()
-    player = generate_level(load_level('level1.txt'))
+    player, portal = generate_level(load_level('scripts/level1.txt'))
     exit_menu_button = Button('backgrounds/button2.png', (30, 30), 'x',
                               'data/fonts/go3v2.ttf', 40, 45,
                               (0, 0, 0), (255, 176, 176))
 
     attack_flag = False  # когда mousebuttondown                                                 3 +
-    attack_ticks = 0
     run_flag = False  # когда не attack и не protection и не dead и не hurt и когда двигается    5 +
     idle_flag = True  # всегда в иных случаях                                                    6
     hurt_flag = False  # когда hp становится меньше                                              2
@@ -216,7 +255,6 @@ def game():
     flag = False
 
     ticks = 0
-    enemis_kick = False
     camera.update(player)
     for tile in all_sprites:
         camera.apply(tile)
@@ -273,7 +311,6 @@ def game():
         else:
             camera.update(player)
             for tile in all_sprites:
-                pass
                 camera.apply(tile)
 
         for enemis in antogonisti_sprites:
@@ -282,7 +319,7 @@ def game():
         if ticks % 200 == 0:
             for enemis in antogonisti_sprites:
                 dir, x, y = enemis.attacking()
-                flag = player.damage(enemis.aliveORnot(), x, y)
+                flag = player.damage(enemis.aliveORnot(), x, y, enemis.get_damage())
                 enemis.kick(x, y, flag)
 
         dead_flag = player.aliveCheck()
@@ -295,9 +332,20 @@ def game():
         attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag = player.animation_script(
             attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag)
 
+        for hlth in health_group:
+            group = pygame.sprite.Group()
+            group.add(hlth)
+            if not hlth.get_full():
+                hlth.destroy(player.health_upp(group))
+
+        if portal.checkCollision(player_group):
+            for elem in all_sprites:
+                elem.kill()
+            main_menu()
+
         tile_group.draw(screen)
-        player_group.draw(screen)
         antogonisti_sprites.update(screen, player.get_pos(), ticks)
+        player_group.draw(screen)
 
         for button in [exit_menu_button]:
             button.changeColor(game_mouse_pos)
