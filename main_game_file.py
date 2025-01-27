@@ -10,7 +10,7 @@ FPS = 100
 WIDTH, HEIGHT = 1200, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
-
+level_now = 1
 
 class Camera:
     def __init__(self):
@@ -27,6 +27,7 @@ class Camera:
 
 
 camera = Camera()
+
 
 def load_level(filename):
     with open(filename, 'r') as mapFile:
@@ -69,10 +70,15 @@ def generate_level(level):
                 Tile('flour3', x, y)
             elif level[y][x] == '/':
                 Tile('flour2', x, y)
+            elif level[y][x] == ':':
+                Tile('flour6', x, y)
+            elif level[y][x] == '(':
+                Tile('flour7', x, y)
             elif level[y][x] == '#':
                 Tile('wall2', x, y)
+
             elif level[y][x] == '@':
-                if level[y][x-1] == '-':
+                if level[y][x - 1] == '-':
                     Tile('flour', x, y)
                     FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour')
                 elif level[y][x - 1] == '=':
@@ -90,27 +96,39 @@ def generate_level(level):
                 elif level[y][x - 1] == '|':
                     Tile('flour5', x, y)
                     FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour5')
+                elif level[y][x - 1] == ':':
+                    Tile('flour6', x, y)
+                    FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour6')
+                elif level[y][x - 1] == '(':
+                    Tile('flour6', x, y)
+                    FallenAngel('fallen_angels/rendered', 'Fallen Angel', x, y, 'flour7')
 
 
             elif level[y][x] == '&':
-                if level[y][x-1] == '-':
+                if level[y][x - 1] == '-':
                     Tile('flour', x, y)
                     FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour')
-                elif level[y][x-1] == '=':
+                elif level[y][x - 1] == '=':
                     Tile('flour1', x, y)
                     FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour1')
-                elif level[y][x-1] == '/':
+                elif level[y][x - 1] == '/':
                     Tile('flour2', x, y)
                     FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour2')
-                elif level[y][x-1] == '^':
+                elif level[y][x - 1] == '^':
                     Tile('flour3', x, y)
                     FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour3')
-                elif level[y][x-1] == '%':
+                elif level[y][x - 1] == '%':
                     Tile('flour4', x, y)
-                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour5')
-                elif level[y][x-1] == '|':
+                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour4')
+                elif level[y][x - 1] == '|':
                     Tile('flour5', x, y)
                     FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour5')
+                elif level[y][x - 1] == ':':
+                    Tile('flour6', x, y)
+                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour6')
+                elif level[y][x - 1] == '(':
+                    Tile('flour7', x, y)
+                    FallenAngel('skeleton/rendered1', 'Sceleton', x, y, 'flour7')
 
             elif level[y][x] == '.':
                 Tile('empty', x, y)
@@ -125,7 +143,7 @@ def generate_level(level):
 
 
 def terminate():
-    pygame.display.set_caption('closing')
+    '''pygame.display.set_caption('closing')
     pygame.display.set_mode((600, 800))
     ticks = 0
     text = ['please wait', 'please wait.', 'please wait..', 'please wait...']
@@ -138,7 +156,7 @@ def terminate():
         txt = font.render(text[ticks // 50], True, (0, 0, 0))
         screen.blit(txt, (20, 20))
         clock.tick(FPS)
-        pygame.display.flip()
+        pygame.display.flip()'''
     pygame.quit()
     sys.exit()
 
@@ -146,9 +164,9 @@ def terminate():
 def options():
     pygame.display.set_caption('options')
     game_mouse_pos = (0, 0)
-    back_menu_button = exit_menu_button = Button('backgrounds/button2.png', (30, 30), 'x',
-                                                 'data/fonts/go3v2.ttf', 40, 45,
-                                                 (0, 0, 0), (255, 176, 176))
+    back_menu_button = Button('backgrounds/button2.png', (30, 30), 'x',
+                              'data/fonts/go3v2.ttf', 40, 45,
+                              (0, 0, 0), (255, 176, 176))
 
     while True:
         screen.fill('black')
@@ -164,6 +182,38 @@ def options():
         for button in [back_menu_button]:
             button.changeColor(game_mouse_pos)
             button.update(screen)
+        pygame.display.flip()
+
+
+def dead_menu():
+    global level_now
+    dead_menu_mouse_pos = (0, 0)
+    restart = Button('backgrounds/button1.png', (400, 450), 'restart', 'data/fonts/go3v2.ttf', 60, 65,
+                              (0, 0, 0), (255, 176, 176))
+    back_menu_button = Button('backgrounds/button1.png', (800, 450), 'menu', 'data/fonts/go3v2.ttf', 60, 65,
+                              (0, 0, 0), (255, 176, 176))
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.MOUSEMOTION:
+                dead_menu_mouse_pos = event.pos
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_menu_button.checkForInput(event.pos):
+                    main_menu()
+                elif restart.checkForInput(event.pos):
+                    game(level_now)
+
+        pygame.draw.rect(screen, 'black', (0, 200, 1800, 400))
+        font = pygame.font.Font('data/fonts/go3v2.ttf', 100)
+        text = font.render('You died', True, (128, 5, 5))
+        screen.blit(text, (400, 220))
+
+        for button in [back_menu_button, restart]:
+            button.changeColor(dead_menu_mouse_pos)
+            button.update(screen)
+
         pygame.display.flip()
 
 
@@ -213,6 +263,9 @@ def levels_menu():
     level_one_button = Button('backgrounds/level1.png', (200, 400), '',
                               'data/fonts/go3v2.ttf', 40, 45,
                               (0, 0, 0), (255, 176, 176), 'backgrounds/level1-1.png')
+    level_two_button = Button('backgrounds/level2.png', (575, 400), '',
+                              'data/fonts/go3v2.ttf', 40, 45,
+                              (0, 0, 0), (255, 176, 176), 'backgrounds/level2-1.png')
 
     while True:
         screen.fill('black')
@@ -222,26 +275,60 @@ def levels_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if exit_menu_button_lvl.checkForInput(event.pos):
                     main_menu()
-                if level_one_button.checkForInput(event.pos):
-                    game()
+                elif level_one_button.checkForInput(event.pos):
+                    level_now = 1
+                    game(1)
+                elif level_two_button.checkForInput(event.pos):
+                    level_now = 2
+                    game(2)
             if event.type == pygame.MOUSEMOTION:
                 lvl_mouse_pos = event.pos
 
-        for button in [exit_menu_button_lvl, level_one_button]:
+        for button in [exit_menu_button_lvl, level_one_button, level_two_button]:
             button.changeColor(lvl_mouse_pos)
-            if button == level_one_button:
+            if button == level_one_button or button == level_two_button:
                 button.update_photo(lvl_mouse_pos)
             button.update(screen)
 
-        pygame.draw.rect(screen, 'white', (425, 100, 300, 600))
         pygame.draw.rect(screen, 'white', (800, 100, 300, 600))
         pygame.display.flip()
 
+def victory_menu():
+    global level_now
+    mouse_pos = (0, 0)
+    next_level_button = Button('backgrounds/button4.png', (400, 450), 'next level', 'data/fonts/go3v2.ttf', 47, 52,
+                     (0, 0, 0), (255, 246, 163))
+    back_menu_button = Button('backgrounds/button4.png', (800, 450), 'menu', 'data/fonts/go3v2.ttf', 50, 57,
+                              (0, 0, 0), (255, 246, 163))
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.MOUSEMOTION:
+                mouse_pos = event.pos
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if next_level_button.checkForInput(event.pos):
+                    level_now += 1
+                    game(level_now)
+                elif back_menu_button.checkForInput(event.pos):
+                    main_menu()
 
-def game():
+        pygame.draw.rect(screen, 'black', (0, 200, 1800, 400))
+        font = pygame.font.Font('data/fonts/go3v2.ttf', 120)
+        text = font.render('Victory', True, (224, 202, 0))
+        screen.blit(text, (390, 220))
+
+        for button in [back_menu_button, next_level_button]:
+            button.changeColor(mouse_pos)
+            button.update(screen)
+
+        pygame.display.flip()
+
+
+def game(level_number):
     pygame.display.set_caption('game')
     game_mouse_pos = (0, 0)
-    player, portal = generate_level(load_level('scripts/level1.txt'))
+    player, portal = generate_level(load_level(f'scripts/level{level_number}.txt'))
     exit_menu_button = Button('backgrounds/button2.png', (30, 30), 'x',
                               'data/fonts/go3v2.ttf', 40, 45,
                               (0, 0, 0), (255, 176, 176))
@@ -329,7 +416,7 @@ def game():
             hurt_flag = True
             attack_ticks, run_flag, idle_flag, protection_flag = False, False, False, False
 
-        attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag = player.animation_script(
+        attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag, stop = player.animation_script(
             attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag)
 
         for hlth in health_group:
@@ -338,14 +425,19 @@ def game():
             if not hlth.get_full():
                 hlth.destroy(player.health_upp(group))
 
-        if portal.checkCollision(player_group):
-            for elem in all_sprites:
-                elem.kill()
-            main_menu()
-
         tile_group.draw(screen)
         antogonisti_sprites.update(screen, player.get_pos(), ticks)
         player_group.draw(screen)
+
+        if portal.checkCollision(player_group):
+            for elem in all_sprites:
+                elem.kill()
+            victory_menu()
+
+        if stop:
+            for elem in all_sprites:
+                elem.kill()
+            dead_menu()
 
         for button in [exit_menu_button]:
             button.changeColor(game_mouse_pos)
@@ -405,4 +497,4 @@ def main_menu():
 
 
 if __name__ == '__main__':
-    load_screen()
+    main_menu()

@@ -1,6 +1,7 @@
 import pygame
 
 word_group = []
+
 s = 190
 
 class Text():

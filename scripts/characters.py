@@ -11,6 +11,7 @@ tiles_image = {'wall1': 'backgrounds/wall1.png',
                'flour4': 'backgrounds/flour1.png',
                'flour5': 'backgrounds/flour1.png',
                'flour6': 'backgrounds/flour1.png',
+               'flour7': 'backgrounds/flour1.png',
                'empty': 'backgrounds/Empty.png'}
 player_group = pygame.sprite.Group()
 tile_group = pygame.sprite.Group()
@@ -91,6 +92,7 @@ class Player(pygame.sprite.Sprite):
 
     def animation_script(self, attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag):
         self.ticks += 1
+        stop = False
         if dead_flag:
             attack_flag, run_flag, idle_flag, hurt_flag, protection_flag = False, False, False, False, False
             if self.ticks % 6 == 0:
@@ -99,6 +101,7 @@ class Player(pygame.sprite.Sprite):
                     self.image = pygame.transform.flip(load_image(f'samurai/randered/Dead{self.dead}.png'), self.dir,
                                                        False)
                 elif self.dead > 10:
+                    stop = True
                     self.kill()
         elif hurt_flag:
             if self.ticks % 8 == 0:
@@ -132,7 +135,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = pygame.transform.flip(load_image(f'samurai/randered/Idle{self.idle}.png'), self.dir, False)
             self.run = 0
 
-        return attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag
+        return attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag, stop
 
     def get_room(self):
         if pygame.sprite.spritecollideany(self, room1):
@@ -147,6 +150,10 @@ class Player(pygame.sprite.Sprite):
             return 'flour4'
         elif pygame.sprite.spritecollideany(self, room6):
             return 'flour5'
+        elif pygame.sprite.spritecollideany(self, room7):
+            return 'flour6'
+        elif pygame.sprite.spritecollideany(self, room8):
+            return 'flour7'
 
     def aliveCheck(self):
         if self.hp <= 0:
@@ -221,18 +228,18 @@ class FallenAngel(pygame.sprite.Sprite):
                         self.rect.y + self.rect.h // 2 - pos[1]) > 60:
                     if self.rect.x - pos[0] < 0:
                         self.rect = self.rect.move((2, 0))
-                        x = 2
+                        x = 4
                         self.dir = False
                     else:
                         self.rect = self.rect.move((-2, 0))
-                        x = -2
+                        x = -4
                         self.dir = True
                     if self.rect.y - pos[1] < 0:
                         self.rect = self.rect.move((0, 2))
-                        y = 2
+                        y = 4
                     else:
                         self.rect = self.rect.move((0, -2))
-                        y = -2
+                        y = -4
                     if self.ticks % 5 == 0:
                         self.animation = self.animation % 8 + 1
                         self.image = pygame.transform.flip(
@@ -313,6 +320,10 @@ class Tile(pygame.sprite.Sprite):
             room5.add(self)
         elif self.type == 'flour5':
             room6.add(self)
+        elif self.type == 'flour6':
+            room7.add(self)
+        elif self.type == 'flour7':
+            room8.add(self)
         self.hp = 100
 
     def get_type(self):
