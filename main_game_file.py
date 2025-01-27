@@ -260,15 +260,27 @@ def levels_menu():
     exit_menu_button_lvl = Button('backgrounds/button2.png', (30, 30), 'x',
                                   'data/fonts/go3v2.ttf', 40, 45,
                                   (0, 0, 0), (255, 176, 176))
-    level_one_button = Button('backgrounds/level1.png', (200, 400), '',
+    level_one_button = Button('backgrounds/level1.png', (130, 237), '',
                               'data/fonts/go3v2.ttf', 40, 45,
                               (0, 0, 0), (255, 176, 176), 'backgrounds/level1-1.png')
-    level_two_button = Button('backgrounds/level2.png', (575, 400), '',
+    level_two_button = Button('backgrounds/level2.png', (300, 237), '',
+                              'data/fonts/go3v2.ttf', 40, 45,
+                              (0, 0, 0), (255, 176, 176), 'backgrounds/level2-1.png')
+    level_three_button = Button('backgrounds/level2.png', (470, 237), '',
                               'data/fonts/go3v2.ttf', 40, 45,
                               (0, 0, 0), (255, 176, 176), 'backgrounds/level2-1.png')
 
     while True:
-        screen.fill('black')
+        screen.blit(load_image('backgrounds/bg7.jpg'), (0, 0))
+        font = pygame.font.Font('data/fonts/go3v2.ttf', 75)
+        text = font.render('Levels', True, (219, 0, 0))
+        font = pygame.font.Font('data/fonts/go3v2.ttf', 25)
+        text1 = font.render('location: underground', True, (219, 0, 0))
+        screen.blit(text, (450, 0))
+        screen.blit(text1, (150, 100))
+
+        pygame.draw.rect(screen, (237, 214, 5), (50, 100, 500, 245), width=2)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
@@ -284,14 +296,14 @@ def levels_menu():
             if event.type == pygame.MOUSEMOTION:
                 lvl_mouse_pos = event.pos
 
-        for button in [exit_menu_button_lvl, level_one_button, level_two_button]:
+        for button in [exit_menu_button_lvl, level_one_button, level_two_button, level_three_button]:
             button.changeColor(lvl_mouse_pos)
-            if button == level_one_button or button == level_two_button:
+            if button == level_one_button or button == level_two_button or button == level_three_button:
                 button.update_photo(lvl_mouse_pos)
             button.update(screen)
 
-        pygame.draw.rect(screen, 'white', (800, 100, 300, 600))
         pygame.display.flip()
+
 
 def victory_menu():
     global level_now
@@ -497,4 +509,4 @@ def main_menu():
 
 
 if __name__ == '__main__':
-    main_menu()
+    levels_menu()

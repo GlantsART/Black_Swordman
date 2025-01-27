@@ -22,7 +22,12 @@ class Button(pygame.sprite.Sprite):
     def __init__(self, image, pos, text, font, font_size, font_size_two, text_color, text_color_two, image2=None):
         super().__init__()
         self.rect_x, self.rect_y = pos[0], pos[1]
-        self.image = load_image(image)
+        if image2 is not None:
+            print(123)
+            self.image = pygame.transform.scale(load_image(image), (150, 200))
+        else:
+            print(456)
+            self.image = (load_image(image))
         self.image1 = image
         self.image2 = image2
         self.pos = pos
@@ -58,8 +63,8 @@ class Button(pygame.sprite.Sprite):
 
     def update_photo(self, pos):
         if pos[0] in range(self.rect.left, self.rect.right) and pos[1] in range(self.rect.top, self.rect.bottom):
-            self.image = pygame.transform.scale(load_image(self.image2), (325, 625))
+            self.image = pygame.transform.scale(load_image(self.image2), (175, 225))
             self.rect = self.image.get_rect(center=(self.pos[0], self.pos[1]))
         else:
-            self.image = load_image(self.image1)
+            self.image = pygame.transform.scale(load_image(self.image1), (150, 200))
             self.rect = self.image.get_rect(center=(self.pos[0], self.pos[1]))
