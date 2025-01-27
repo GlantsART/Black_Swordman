@@ -143,7 +143,7 @@ def generate_level(level):
 
 
 def terminate():
-    '''pygame.display.set_caption('closing')
+    pygame.display.set_caption('closing')
     pygame.display.set_mode((600, 800))
     ticks = 0
     text = ['please wait', 'please wait.', 'please wait..', 'please wait...']
@@ -156,7 +156,7 @@ def terminate():
         txt = font.render(text[ticks // 50], True, (0, 0, 0))
         screen.blit(txt, (20, 20))
         clock.tick(FPS)
-        pygame.display.flip()'''
+        pygame.display.flip()
     pygame.quit()
     sys.exit()
 
@@ -509,4 +509,4 @@ def main_menu():
 
 
 if __name__ == '__main__':
-    levels_menu()
+    load_screen()
