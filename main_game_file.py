@@ -391,25 +391,25 @@ def load_screen():
                     load_screen_music.stop()
                     main_menu()
 
-        screen.blit(load_image('backgrounds/bg3.jpg'), (-200, 0))
+        screen.blit(pygame.transform.scale(load_image('backgrounds/bg13.jpg'), (1200, 800)), (0, 0))
 
         font = pygame.font.Font('data/fonts/go3v2.ttf', 100)
-        text = font.render('Black Swordman', True, (61, 7, 7))
-        text2 = font.render('Black Swordman', True, (255, 221, 148))
-        screen.blit(text2, (318, 48))
-        screen.blit(text, (320, 50))
-        pygame.draw.rect(screen, (61, 7, 7), (320, 160, 580, 55), width=3)
+        text = font.render('Black Swordman', True, (161, 0, 0))
+        text2 = font.render('Black Swordman', True, (20, 18, 18))
+        screen.blit(text2, (98, -2))
+        screen.blit(text, (100, 0))
+        pygame.draw.rect(screen, (20, 18, 18), (150, 120, 580, 55), width=3)
         if ticks % 10 == 0 and ticks <= 300:
             load_x += 19
-        pygame.draw.rect(screen, (61, 7, 7), (325, 165, load_x, 45))
+        pygame.draw.rect(screen, (20, 18, 18), (155, 125, load_x, 45))
         font = pygame.font.Font('data/fonts/go3v2.ttf', 40)
-        text3 = font.render('loading...', True, (216, 111, 28))
-        screen.blit(text3, (335, 166))
+        text3 = font.render('loading...', True, (217, 205, 141))
+        screen.blit(text3, (220, 126))
 
         if ticks > 300:
             font = pygame.font.Font('data/fonts/kashimarusbycop.otf', 30)
             text4 = font.render('Нажмите любую кнопку чтобы продолжить.', True, (61, 7, 7))
-            screen.blit(text4, (340, 220))
+            screen.blit(text4, (180, 180))
 
         pygame.display.flip()
 
