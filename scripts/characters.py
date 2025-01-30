@@ -2,17 +2,21 @@ import pygame, os, sys
 import random
 
 player_img = 'samurai/randered/baze.png'
-tiles_image = {'wall1': 'backgrounds/wall1.png',
-               'wall2': 'backgrounds/wall2.png',
-               'flour': 'backgrounds/flour1.png',
-               'flour1': 'backgrounds/flour2.png',
-               'flour2': 'backgrounds/flour1.png',
-               'flour3': 'backgrounds/flour1.png',
-               'flour4': 'backgrounds/flour1.png',
-               'flour5': 'backgrounds/flour1.png',
-               'flour6': 'backgrounds/flour1.png',
-               'flour7': 'backgrounds/flour1.png',
-               'empty': 'backgrounds/Empty.png'}
+tiles_image = {'wall1': ['backgrounds/wall1.png', 'backgrounds/wall3.png'],
+               'wall2': ['backgrounds/wall2.png', 'backgrounds/wall4.png'],
+               'flour': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'flour1': ['backgrounds/flour2.png', 'backgrounds/flour3.png'],
+               'flour2': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'flour3': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'flour4': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'flour5': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'flour6': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'flour7': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'flour8': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'flour9': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'health1': ['backgrounds/hill1.png', 'backgrounds/hill2.png'],
+               'health2': ['backgrounds/flour1.png', 'backgrounds/flour3.png'],
+               'empty': ['backgrounds/Empty.png']}
 player_group = pygame.sprite.Group()
 tile_group = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
@@ -154,6 +158,10 @@ class Player(pygame.sprite.Sprite):
             return 'flour6'
         elif pygame.sprite.spritecollideany(self, room8):
             return 'flour7'
+        elif pygame.sprite.spritecollideany(self, room9):
+            return 'flour8'
+        elif pygame.sprite.spritecollideany(self, room10):
+            return 'flour9'
 
     def aliveCheck(self):
         if self.hp <= 0:
@@ -295,14 +303,11 @@ class FallenAngel(pygame.sprite.Sprite):
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, tile_type, pos_x, pos_y, flag=False):
+    def __init__(self, tile_type, pos_x, pos_y, i):
         super().__init__(tile_group, all_sprites)
-        self.image = load_image(tiles_image[tile_type])
+        self.image = load_image(tiles_image[tile_type][i])
         self.type = tile_type
-        if flag:
-            self.rect = pygame.Rect(pos_x, pos_y, 20, 5)
-        else:
-            self.rect = pygame.Rect(50 * pos_x, 50 * pos_y, 20, 5)
+        self.rect = pygame.Rect(50 * pos_x, 50 * pos_y, 20, 5)
 
         if self.type == 'wall1':
             wall1_sprites.add(self)
@@ -324,16 +329,20 @@ class Tile(pygame.sprite.Sprite):
             room7.add(self)
         elif self.type == 'flour7':
             room8.add(self)
+        elif self.type == 'flour8':
+            room9.add(self)
+        elif self.type == 'flour9':
+            room10.add(self)
         self.hp = 100
 
     def get_type(self):
         return self.type
 
 class Health(pygame.sprite.Sprite):
-    def __init__(self, image1, image2, x, y):
+    def __init__(self, image1, image2, x, y, a):
         super().__init__(health_group, all_sprites, tile_group)
-        self.image = load_image(image1)
-        self.image2 = image2
+        self.image = load_image(tiles_image[image1][a])
+        self.image2 = tiles_image[image2][a]
         self.rect = pygame.Rect(50 * x, 50 * y, 20, 5)
         self.pos_x, self.pos_y = x, y
         self.used = False

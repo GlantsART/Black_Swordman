@@ -23,10 +23,8 @@ class Button(pygame.sprite.Sprite):
         super().__init__()
         self.rect_x, self.rect_y = pos[0], pos[1]
         if image2 is not None:
-            print(123)
             self.image = pygame.transform.scale(load_image(image), (150, 200))
         else:
-            print(456)
             self.image = (load_image(image))
         self.image1 = image
         self.image2 = image2
