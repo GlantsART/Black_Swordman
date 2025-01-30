@@ -25,9 +25,10 @@ with open('settings_files/player_settings', 'r') as file:
             game_volume = float(row)
         elif i == 1:
             menu_volume = float(row)
-        else:
+        elif i == 2:
             another_volume = float(row)
     file.close()
+sound1.set_volume(another_volume)
 
 
 class Camera:
@@ -181,7 +182,7 @@ def generate_level(level):
 
 
 def terminate():
-    pygame.display.set_caption('closing')
+    '''pygame.display.set_caption('closing')
     pygame.display.set_mode((600, 800))
     ticks = 0
     text = ['please wait', 'please wait.', 'please wait..', 'please wait...']
@@ -194,7 +195,7 @@ def terminate():
         txt = font.render(text[ticks // 50], True, (0, 0, 0))
         screen.blit(txt, (20, 20))
         clock.tick(FPS)
-        pygame.display.flip()
+        pygame.display.flip()'''
     pygame.quit()
     sys.exit()
 
@@ -331,8 +332,6 @@ def update_sounds():
     sound4.set_volume(another_volume)
     sound5.set_volume(another_volume)
     sound6.set_volume(another_volume)
-
-
 
 
 def dead_menu():
@@ -548,7 +547,7 @@ def victory_menu():
 
 
 def game(level_number):
-    pygame.display.set_caption('game')
+    pygame.display.set_caption('Black Swordman')
     pygame.mixer.music.load('data/sounds/game.mp3')
     pygame.mixer.music.set_volume(game_volume)
     pygame.mixer.music.play(-1)
@@ -556,7 +555,16 @@ def game(level_number):
     player, portal = generate_level(load_level(f'data/levels/level{level_number}.txt'))
     exit_menu_button = Button('backgrounds/button2.png', (30, 30), 'x',
                               'data/fonts/go3v2.ttf', 40, 45,
-                              (0, 0, 0), (255, 176, 176))
+                              (0, 0, 0), (222, 139, 175))
+    continue_button = Button('backgrounds/button1.png', (600, 275), 'continue',
+                         'data/fonts/go3v2.ttf', 55, 65,
+                         (60, 0, 20), (255, 176, 176))
+    menu_button = Button('backgrounds/button1.png', (600, 400), 'menu',
+                           'data/fonts/go3v2.ttf', 60, 70, (60, 0, 20),
+                           (222, 139, 175))
+    exit_button = Button(('backgrounds/button1.png'), (600, 525), 'exit',
+                         'data/fonts/go3v2.ttf', 60, 70, (60, 0, 20),
+                         (222, 139, 175))
 
     attack_flag = False  # когда mousebuttondown                                                 3 +
     run_flag = False  # когда не attack и не protection и не dead и не hurt и когда двигается    5 +
@@ -565,6 +573,7 @@ def game(level_number):
     dead_flag = False  # когда hp < 0                                                            1 +-
     protection_flag = False  # Когда зажата пкм                                                  4 +
     flag = False
+    pause = False
 
     ticks = 0
     camera.update(player)
@@ -572,112 +581,135 @@ def game(level_number):
         camera.apply(tile)
 
     while True:
-        screen.fill((4, 5, 25))
-        ticks += 1
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.MOUSEMOTION:
                 game_mouse_pos = event.pos
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if exit_menu_button.checkForInput(event.pos):
-                    sound1.play()
-                    for tile in all_sprites:
-                        tile.kill()
-                    main_menu()
-                else:
+            if not pause:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if exit_menu_button.checkForInput(event.pos):
+                        sound1.play()
+                        pause = True
+                    else:
+                        if not dead_flag and not hurt_flag and not attack_flag:
+                            sound2.play()
+                            attack_flag = True
+                            run_flag, idle_flag, protection_flag = False, False, False
+                            if attack_flag:
+                                dir, x, y = player.get_attack()
+                                for enemis in antogonisti_sprites:
+                                    enemis.playerShot(dir, x, y)
+
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                     if not dead_flag and not hurt_flag and not attack_flag:
-                        sound2.play()
-                        attack_flag = True
-                        run_flag, idle_flag, protection_flag = False, False, False
-                        if attack_flag:
-                            dir, x, y = player.get_attack()
-                            for enemis in antogonisti_sprites:
-                                enemis.playerShot(dir, x, y)
+                        run_flag, idle_flag, protection_flag = False, False, True
 
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                if not dead_flag and not hurt_flag and not attack_flag:
-                    run_flag, idle_flag, protection_flag = False, False, True
+                if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+                    protection_flag, idle_flag = False, True
+            else:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if continue_button.checkForInput(event.pos):
+                        sound1.play()
+                        pause = False
+                    elif menu_button.checkForInput(event.pos):
+                        sound1.play()
+                        for tile in all_sprites:
+                            tile.kill()
+                        main_menu()
+                    elif exit_button.checkForInput(event.pos):
+                        sound1.play()
+                        terminate()
+        if not pause:
+            screen.fill((4, 5, 25))
+            ticks += 1
 
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
-                protection_flag, idle_flag = False, True
+            player.defend(protection_flag)
+            move_x_flag, move_y_flag = False, False
+            if not attack_flag and not protection_flag and not hurt_flag and not dead_flag:
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_a]:
+                    move_x_flag = player.set_pos((-3, 0))
+                    idle_flag = False
+                    run_flag = True
+                elif keys[pygame.K_d]:
+                    move_x_flag = player.set_pos((3, 0))
+                    idle_flag = False
+                    run_flag = True
+                if keys[pygame.K_s]:
+                    move_y_flag = player.set_pos((0, 3))
+                    idle_flag = False
+                    run_flag = True
+                elif keys[pygame.K_w]:
+                    move_y_flag = player.set_pos((0, -3))
+                    idle_flag = False
+                    run_flag = True
+            if not move_x_flag and not move_y_flag:
+                run_flag = False
+            else:
+                camera.update(player)
+                for tile in all_sprites:
+                    camera.apply(tile)
 
-        player.defend(protection_flag)
-        move_x_flag, move_y_flag = False, False
-        if not attack_flag and not protection_flag and not hurt_flag and not dead_flag:
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_a]:
-                move_x_flag = player.set_pos((-3, 0))
-                idle_flag = False
-                run_flag = True
-            elif keys[pygame.K_d]:
-                move_x_flag = player.set_pos((3, 0))
-                idle_flag = False
-                run_flag = True
-            if keys[pygame.K_s]:
-                move_y_flag = player.set_pos((0, 3))
-                idle_flag = False
-                run_flag = True
-            elif keys[pygame.K_w]:
-                move_y_flag = player.set_pos((0, -3))
-                idle_flag = False
-                run_flag = True
-        if not move_x_flag and not move_y_flag:
-            run_flag = False
-        else:
-            camera.update(player)
-            for tile in all_sprites:
-                camera.apply(tile)
-
-        for enemis in antogonisti_sprites:
-            enemis.checkActive(player.get_room())
-
-        if ticks % 200 == 0:
             for enemis in antogonisti_sprites:
-                dir, x, y = enemis.attacking()
-                flag = player.damage(enemis.aliveORnot(), x, y, enemis.get_damage())
-                if flag:
-                    sound3.play()
-                enemis.kick(x, y, flag)
+                enemis.checkActive(player.get_room())
 
-        dead_flag = player.aliveCheck()
+            if ticks % 200 == 0:
+                for enemis in antogonisti_sprites:
+                    dir, x, y = enemis.attacking()
+                    flag = player.damage(enemis.aliveORnot(), x, y, enemis.get_damage())
+                    if flag:
+                        sound3.play()
+                    enemis.kick(x, y, flag)
 
-        if not dead_flag and flag == 'yes':
-            flag = False
-            hurt_flag = True
-            attack_ticks, run_flag, idle_flag, protection_flag = False, False, False, False
+            dead_flag = player.aliveCheck()
 
-        attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag, stop = player.animation_script(
-            attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag)
+            if not dead_flag and flag == 'yes':
+                flag = False
+                hurt_flag = True
+                attack_ticks, run_flag, idle_flag, protection_flag = False, False, False, False
 
-        for hlth in health_group:
-            group = pygame.sprite.Group()
-            group.add(hlth)
-            if not hlth.get_full():
-                flag2 = player.health_upp(group)
-                if flag2:
-                    sound5.play()
-                hlth.destroy(flag2)
+            attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag, stop = player.animation_script(
+                attack_flag, run_flag, idle_flag, hurt_flag, dead_flag, protection_flag)
 
-        tile_group.draw(screen)
-        antogonisti_sprites.update(screen, player.get_pos(), ticks)
-        player_group.draw(screen)
+            for hlth in health_group:
+                group = pygame.sprite.Group()
+                group.add(hlth)
+                if not hlth.get_full():
+                    flag2 = player.health_upp(group)
+                    if flag2:
+                        sound5.play()
+                    hlth.destroy(flag2)
 
-        if portal.checkCollision(player_group):
-            for elem in all_sprites:
-                elem.kill()
-            victory_menu()
+            tile_group.draw(screen)
+            antogonisti_sprites.update(screen, player.get_pos(), ticks)
+            player_group.draw(screen)
 
-        if stop:
-            for elem in all_sprites:
-                elem.kill()
-            dead_menu()
+            if portal.checkCollision(player_group):
+                for elem in all_sprites:
+                    elem.kill()
+                victory_menu()
 
-        for button in [exit_menu_button]:
-            button.changeColor(game_mouse_pos)
-            button.update(screen)
+            if stop:
+                for elem in all_sprites:
+                    elem.kill()
+                dead_menu()
 
-        draw_lives(screen, player.get_hp())
+            for button in [exit_menu_button]:
+                button.changeColor(game_mouse_pos)
+                button.update(screen)
+
+            draw_lives(screen, player.get_hp())
+        else:
+            screen.blit(pygame.transform.scale(load_image('backgrounds/bg10.jpg'), (600, 800)), (300, 0))
+            font = pygame.font.Font('data/fonts/go3v2.ttf', 85)
+            text = font.render('Black Swordman', True, (70, 0, 30))
+            text1 = font.render('Black Swordman', True, (181, 36, 98))
+            screen.blit(text1, (257, 27))
+            screen.blit(text, (260, 30))
+            for button in [continue_button, menu_button, exit_button]:
+                button.changeColor(game_mouse_pos)
+                button.update(screen)
 
         clock.tick(FPS)
         pygame.display.flip()
@@ -737,4 +769,4 @@ def main_menu():
 
 
 if __name__ == '__main__':
-    load_screen()
+    game(1)
