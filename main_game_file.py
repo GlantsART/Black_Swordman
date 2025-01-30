@@ -19,7 +19,7 @@ sound4 = pygame.mixer.Sound('data/sounds/win.ogg')
 sound5 = pygame.mixer.Sound('data/sounds/hill.mp3')
 sound6 = pygame.mixer.Sound('data/sounds/game over.mp3')
 
-with open('player_settings', 'r') as file:
+with open('settings_files/player_settings', 'r') as file:
     for i, row in enumerate(file):
         if i == 0:
             game_volume = float(row)
@@ -253,7 +253,7 @@ def options():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_menu_button.checkForInput(event.pos):
                     sound1.play()
-                    with open('player_settings', 'w') as file:
+                    with open('settings_files/player_settings', 'w') as file:
                         file.write(str(game_volume) + '\n')
                         file.write(str(menu_volume) + '\n')
                         file.write(str(another_volume) + '\n')
@@ -416,7 +416,7 @@ def levels_menu():
     pygame.display.set_caption('chouse level')
     lvl_mouse_pos = (0, 0)
     complited_levels = ''
-    with open('complited_levels.txt', 'r') as file:
+    with open('settings_files/complited_levels.txt', 'r') as file:
         for i, s in enumerate(file):
             complited_levels += s
         file.close()
@@ -517,7 +517,7 @@ def victory_menu():
                                (0, 0, 0), (255, 246, 163))
     back_menu_button = Button('backgrounds/button4.png', (800, 450), 'menu', 'data/fonts/go3v2.ttf', 50, 57,
                               (0, 0, 0), (255, 246, 163))
-    with open('complited_levels.txt', 'a') as file:
+    with open('settings_files/complited_levels.txt', 'a') as file:
         file.write(str(level_now + 1))
         file.close()
     while True:
@@ -553,7 +553,7 @@ def game(level_number):
     pygame.mixer.music.set_volume(game_volume)
     pygame.mixer.music.play(-1)
     game_mouse_pos = (0, 0)
-    player, portal = generate_level(load_level(f'scripts/level{level_number}.txt'))
+    player, portal = generate_level(load_level(f'data/levels/level{level_number}.txt'))
     exit_menu_button = Button('backgrounds/button2.png', (30, 30), 'x',
                               'data/fonts/go3v2.ttf', 40, 45,
                               (0, 0, 0), (255, 176, 176))
