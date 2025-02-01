@@ -10,7 +10,7 @@
 ![baze](https://github.com/user-attachments/assets/26fbd367-1d92-403d-92ed-a70be6c2aa9a) ![base](https://github.com/user-attachments/assets/993abfeb-4879-4ed8-b216-2d55e0af87b0) 
 ![base](https://github.com/user-attachments/assets/1269a2f4-0421-47b9-ae64-9f592f7135eb)
 
-Об игровом процессе.
+                                          Об игровом процессе.
 В начале игры вы появляетесь в комнате из которой ведет один или несколько выходов ![image](https://github.com/user-attachments/assets/95cd60d7-89ae-422d-afbf-2000232f1511).
 Конечная цель - найти портал, который дас доступ на следуюший уровень![image](https://github.com/user-attachments/assets/7f09576f-814a-42a5-9cbc-285003b79556).
 Для того чтобы найти портал, придется пройти несколько комнат и победить врагов ![image](https://github.com/user-attachments/assets/3fc95fc6-2162-41c8-a636-c47738a52872)
