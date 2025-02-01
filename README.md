@@ -1,2 +1,3 @@
+![icon](https://github.com/user-attachments/assets/abd9c602-3d70-46d2-b45c-f2e2d42e244c)
 Black Swordman
-![bg3](https://github.com/user-attachments/assets/2ecdd206-233d-47c1-bf4c-17f3e017b48e)
+
