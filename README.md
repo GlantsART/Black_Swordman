@@ -1,3 +1,5 @@
 ![icon](https://github.com/user-attachments/assets/abd9c602-3d70-46d2-b45c-f2e2d42e244c)
-Black Swordman
+                                                Black Swordman
 
+                                          Немного об истории создания.
+Автор данного произведения вдохновлялся японской культурой, киниматографом и видеогеймингом, а так же за основу была взята игра "Soul Knght".
