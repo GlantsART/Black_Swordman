@@ -387,7 +387,7 @@ def load_screen():
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                if ticks >= 300:
+                if ticks >= 200:
                     load_screen_music.stop()
                     main_menu()
 
@@ -398,15 +398,15 @@ def load_screen():
         text2 = font.render('Black Swordman', True, (20, 18, 18))
         screen.blit(text2, (98, -2))
         screen.blit(text, (100, 0))
-        pygame.draw.rect(screen, (20, 18, 18), (150, 120, 580, 55), width=3)
-        if ticks % 10 == 0 and ticks <= 300:
-            load_x += 19
+        pygame.draw.rect(screen, (20, 18, 18), (150, 120, 570, 55), width=3)
+        if ticks % 10 == 0 and ticks <= 200:
+            load_x += 28
         pygame.draw.rect(screen, (20, 18, 18), (155, 125, load_x, 45))
         font = pygame.font.Font('data/fonts/go3v2.ttf', 40)
         text3 = font.render('loading...', True, (217, 205, 141))
         screen.blit(text3, (220, 126))
 
-        if ticks > 300:
+        if ticks > 200:
             font = pygame.font.Font('data/fonts/kashimarusbycop.otf', 30)
             text4 = font.render('Нажмите любую кнопку чтобы продолжить.', True, (61, 7, 7))
             screen.blit(text4, (180, 180))
@@ -453,13 +453,29 @@ def levels_menu():
         font = pygame.font.Font('data/fonts/go3v2.ttf', 25)
         text1 = font.render('location 1: underground', True, (219, 0, 0))
         text2 = font.render('location 2: streets of town', True, (219, 0, 0))
+        text3 = font.render('location 3: ...', True, (219, 0, 0))
+        text4 = font.render('location 4: ...', True, (219, 0, 0))
 
         screen.blit(text, (450, 0))
         screen.blit(text1, (150, 100))
         screen.blit(text2, (150, 375))
+        screen.blit(text3, (750, 100))
+        screen.blit(text4, (750, 375))
 
         pygame.draw.rect(screen, (237, 214, 5), (50, 100, 500, 245), width=2)
         pygame.draw.rect(screen, (237, 214, 5), (50, 375, 500, 245), width=2)
+        pygame.draw.rect(screen, (237, 214, 5), (650, 100, 500, 245), width=2)
+        pygame.draw.rect(screen, (237, 214, 5), (650, 375, 500, 245), width=2)
+        pygame.draw.rect(screen, (0, 0, 0), (655, 412, 150, 200))
+        pygame.draw.rect(screen, (0, 0, 0), (825, 412, 150, 200))
+        pygame.draw.rect(screen, (0, 0, 0), (995, 412, 150, 200))
+        pygame.draw.rect(screen, (0, 0, 0), (655, 137, 150, 200))
+        pygame.draw.rect(screen, (0, 0, 0), (825, 137, 150, 200))
+        pygame.draw.rect(screen, (0, 0, 0), (995, 137, 150, 200))
+        font = pygame.font.Font('data/fonts/go3v2.ttf', 15)
+        text5 = font.render('to be continued...', True, (222, 222, 222))
+        screen.blit(text5, (832, 150))
+        screen.blit(text5, (832, 425))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -516,10 +532,15 @@ def victory_menu():
     global level_now
     mouse_pos = (0, 0)
     sound4.play()
-    next_level_button = Button('backgrounds/button4.png', (400, 450), 'next level', 'data/fonts/go3v2.ttf', 47, 52,
+    if level_now != 6:
+        next_level_button = Button('backgrounds/button4.png', (400, 450), 'next level', 'data/fonts/go3v2.ttf', 47, 52,
                                (0, 0, 0), (255, 246, 163))
+    else:
+        next_level_button = Button('backgrounds/button4.png', (400, 450), 'restart', 'data/fonts/go3v2.ttf', 47, 52,
+                                   (0, 0, 0), (255, 246, 163))
     back_menu_button = Button('backgrounds/button4.png', (800, 450), 'menu', 'data/fonts/go3v2.ttf', 50, 57,
                               (0, 0, 0), (255, 246, 163))
+
     with open('settings_files/complited_levels.txt', 'a') as file:
         file.write(str(level_now + 1))
         file.close()
@@ -530,8 +551,11 @@ def victory_menu():
             if event.type == pygame.MOUSEMOTION:
                 mouse_pos = event.pos
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if next_level_button.checkForInput(event.pos):
+                if next_level_button.checkForInput(event.pos) and level_now != 6:
                     level_now += 1
+                    sound1.play()
+                    game(level_now)
+                elif next_level_button.checkForInput(event.pos) and level_now == 6:
                     sound1.play()
                     game(level_now)
                 elif back_menu_button.checkForInput(event.pos):
